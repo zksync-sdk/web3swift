@@ -32,7 +32,7 @@ public enum TransactionType: UInt, CustomStringConvertible, CaseIterable {
     /// For type 2 transactions conforming to EIP1559
     case eip1559
     
-    case eip712 = 71
+    case eip712 = 0x71
 
     /// range-checking value, not a valid type, will never be returned as a type
     // case total // always keep immediately after last valid type
