@@ -83,6 +83,7 @@ public struct EnvelopeFactory {
         switch envelopeType {
         case .eip2930: return EIP2930Envelope(to: to, nonce: nonce, v: v, r: r, s: s, parameters: parameters)
         case .eip1559: return EIP1559Envelope(to: to, nonce: nonce, v: v, r: r, s: s, parameters: parameters)
+        case .eip712: return EIP712Envelope(to: to, nonce: nonce, v: v, r: r, s: s, parameters: parameters)
         default: return LegacyEnvelope(to: to, nonce: nonce, v: v, r: r, s: s, parameters: parameters)
         }
     }
