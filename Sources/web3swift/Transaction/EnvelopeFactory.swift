@@ -33,6 +33,7 @@ public struct EnvelopeFactory {
         case .legacy: return LegacyEnvelope(rawValue: rawValue)
         case .eip2930: return EIP2930Envelope(rawValue: rawValue)
         case .eip1559: return EIP1559Envelope(rawValue: rawValue)
+        case .eip712: return EIP712Envelope(rawValue: rawValue)
         }
     }
 
@@ -61,6 +62,7 @@ public struct EnvelopeFactory {
         case .legacy: return try LegacyEnvelope(from: decoder)
         case .eip2930: return try EIP2930Envelope(from: decoder)
         case .eip1559: return try EIP1559Envelope(from: decoder)
+        case .eip712: return try EIP712Envelope(from: decoder)
         }
     }
 

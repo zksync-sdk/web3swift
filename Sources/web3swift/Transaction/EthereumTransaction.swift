@@ -308,6 +308,9 @@ extension EthereumTransaction {
             case .eip1559:
                 guard let env = self.envelope as? EIP1559Envelope else { preconditionFailure("Unable to downcast to EIP1559Envelope") }
                 return env.parameters.gasLimit ?? 0
+            case .eip712:
+                guard let env = self.envelope as? EIP712Envelope else { preconditionFailure("Unable to downcast to EIP712Envelope") }
+                return env.parameters.gasLimit ?? 0
             }
         }
         set(value) {
@@ -320,6 +323,9 @@ extension EthereumTransaction {
                 env.parameters.gasLimit = value
             case .eip1559:
                 guard var env = self.envelope as? EIP1559Envelope else { preconditionFailure("Unable to downcast to EIP1559Envelope") }
+                env.parameters.gasLimit = value
+            case .eip712:
+                guard var env = self.envelope as? EIP712Envelope else { preconditionFailure("Unable to downcast to EIP712Envelope") }
                 env.parameters.gasLimit = value
             }
         }
@@ -337,6 +343,8 @@ extension EthereumTransaction {
                 return env.parameters.gasPrice ?? 0
             case .eip1559:
                 preconditionFailure("EIP1559Envelope has no member gasPrice")
+            case .eip712:
+                preconditionFailure("EIP712Envelope has no member gasPrice")
             }
         }
         set(value) {
@@ -349,6 +357,8 @@ extension EthereumTransaction {
                 env.parameters.gasPrice = value
             case .eip1559:
                 preconditionFailure("EIP1559Envelope has no member gasPrice")
+            case .eip712:
+                preconditionFailure("EIP712Envelope has no member gasPrice")
             }
         }
     }
@@ -365,6 +375,9 @@ extension EthereumTransaction {
             case .eip1559:
                 guard let env = self.envelope as? EIP1559Envelope else { preconditionFailure("Unable to downcast to EIP1559Envelope") }
                 return env.parameters.maxPriorityFeePerGas ?? 0
+            case .eip712:
+                guard let env = self.envelope as? EIP712Envelope else { preconditionFailure("Unable to downcast to EIP712Envelope") }
+                return env.parameters.maxPriorityFeePerGas ?? 0
             }
         }
         set(value) {
@@ -375,6 +388,9 @@ extension EthereumTransaction {
                 preconditionFailure("EIP2930Envelope has no member maxPriorityFeePerGas")
             case .eip1559:
                 guard var env = self.envelope as? EIP1559Envelope else { preconditionFailure("Unable to downcast to EIP1559Envelope") }
+                env.parameters.maxPriorityFeePerGas = value
+            case .eip712:
+                guard var env = self.envelope as? EIP712Envelope else { preconditionFailure("Unable to downcast to EIP712Envelope") }
                 env.parameters.maxPriorityFeePerGas = value
             }
         }
@@ -391,6 +407,9 @@ extension EthereumTransaction {
             case .eip1559:
                 guard let env = self.envelope as? EIP1559Envelope else { preconditionFailure("Unable to downcast to EIP1559Envelope") }
                 return env.parameters.maxFeePerGas ?? 0
+            case .eip712:
+                guard let env = self.envelope as? EIP712Envelope else { preconditionFailure("Unable to downcast to EIP712Envelope") }
+                return env.parameters.maxFeePerGas ?? 0
             }
         }
         set(value) {
@@ -401,6 +420,9 @@ extension EthereumTransaction {
                 preconditionFailure("EIP2930Envelope has no member maxFeePerGas")
             case .eip1559:
                 guard var env = self.envelope as? EIP1559Envelope else { preconditionFailure("Unable to downcast to EIP1559Envelope") }
+                env.parameters.maxFeePerGas = value
+            case .eip712:
+                guard var env = self.envelope as? EIP712Envelope else { preconditionFailure("Unable to downcast to EIP712Envelope") }
                 env.parameters.maxFeePerGas = value
             }
         }
@@ -418,6 +440,9 @@ extension EthereumTransaction {
             case .eip1559:
                 guard let env = self.envelope as? EIP1559Envelope else { preconditionFailure("Unable to downcast to EIP1559Envelope") }
                 return env.parameters.accessList ?? []
+            case .eip712:
+                guard let env = self.envelope as? EIP712Envelope else { preconditionFailure("Unable to downcast to EIP712Envelope") }
+                return env.parameters.accessList ?? []
             }
         }
         set(value) {
@@ -429,6 +454,9 @@ extension EthereumTransaction {
                 env.parameters.accessList = value
             case .eip1559:
                 guard var env = self.envelope as? EIP1559Envelope else { preconditionFailure("Unable to downcast to EIP1559Envelope") }
+                env.parameters.accessList = value
+            case .eip712:
+                guard var env = self.envelope as? EIP712Envelope else { preconditionFailure("Unable to downcast to EIP712Envelope") }
                 env.parameters.accessList = value
             }
         }
