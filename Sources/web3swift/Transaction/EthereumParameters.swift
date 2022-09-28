@@ -79,15 +79,17 @@ public struct EIP712Meta {
     
     public var paymasterParams: PaymasterParams?
     
+    public var factoryDeps: [Data]?
+    
     public init(ergsPerPubdata: BigUInt? = nil,
                 customSignature: Data? = nil,
-                paymasterParams: PaymasterParams? = nil) {
+                paymasterParams: PaymasterParams? = nil,
+                factoryDeps: [Data]? = nil) {
         self.ergsPerPubdata = ergsPerPubdata
         self.customSignature = customSignature
         self.paymasterParams = paymasterParams
+        self.factoryDeps = factoryDeps
     }
-    
-    // factoryDeps
 }
 
 public struct PaymasterParams {
