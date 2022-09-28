@@ -64,6 +64,9 @@ extension Web3HttpProvider {
                 urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
                 urlRequest.httpBody = requestData
+                
+                print("\(#function) providerURL: \(providerURL)")
+                
                 let debugValue = try JSONSerialization.jsonObject(with: requestData, options: JSONSerialization.ReadingOptions(rawValue: 0))
                 print("\(#function): \(debugValue)")
                 let debugString = String(data: requestData, encoding: .utf8)
