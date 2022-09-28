@@ -49,6 +49,8 @@ public struct EthereumParameters {
 
     /// access list for contract execution (EIP-2930 and EIP-1559 only)
     public var accessList: [AccessListEntry]?
+    
+    public var EIP712Meta: EIP712Meta?
 }
 
 public extension EthereumParameters {
@@ -64,4 +66,22 @@ public extension EthereumParameters {
         if opts.maxPriorityFeePerGas != nil { self.maxPriorityFeePerGas = opts.resolveMaxPriorityFeePerGas(0) }
         self.accessList = opts.accessList
     }
+}
+
+public struct EIP712Meta {
+    
+    var ergsPerPubdata: BigUInt?
+    
+    var customSignature: Data?
+    
+    var paymasterParams: PaymasterParams?
+    
+    // factoryDeps
+}
+
+public struct PaymasterParams {
+    
+    var paymaster: String?
+    
+    var paymasterInput: Data?
 }
