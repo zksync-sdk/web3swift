@@ -349,6 +349,8 @@ extension EIP712Envelope {
             // 13
             if let factoryDeps = EIP712Meta?.factoryDeps {
                 // TODO: Add EIP712Meta.factoryDeps if present.
+            } else {
+                fields.append([] as AnyObject)
             }
             
             // 14
@@ -363,6 +365,8 @@ extension EIP712Envelope {
             // 15
             if let paymaster = EIP712Meta?.paymasterParams {
                 // TODO: Add EIP712Meta.paymasterParams if present.
+            } else {
+                fields.append([] as AnyObject)
             }
         }
         guard var result = RLP.encode(fields) else { return nil }
