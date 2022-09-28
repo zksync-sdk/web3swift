@@ -45,6 +45,10 @@ public struct EIP712Envelope: EIP2718Envelope {
     
     public var accessList: [AccessListEntry] // from EIP-2930
     
+    public var from: String?
+    
+    public var EIP712Meta: EIP712Meta?
+    
     // for CustomStringConvertible
     public var description: String {
         var toReturn = ""
@@ -254,6 +258,8 @@ extension EIP712Envelope {
         self.maxFeePerGas = parameters?.maxFeePerGas ?? 0
         self.gasLimit = parameters?.gasLimit ?? 0
         self.accessList = parameters?.accessList ?? []
+        self.from = parameters?.from
+        self.EIP712Meta = parameters?.EIP712Meta
     }
     
     // memberwise
@@ -293,7 +299,7 @@ extension EIP712Envelope {
     }
     
     public func encode(for type: EncodeType = .transaction) -> Data? {
-        let fields: [AnyObject]
+        var fields: [AnyObject]
         let list = accessList.map { $0.encodeAsList() as AnyObject }
         
         switch type {
@@ -313,8 +319,19 @@ extension EIP712Envelope {
                 s
             ] as [AnyObject]
         case .signature:
+//            fields = [
+//                chainID,
+//                nonce,
+//                maxPriorityFeePerGas,
+//                maxFeePerGas,
+//                gasLimit,
+//                to.addressData,
+//                value,
+//                data,
+//                list
+//            ] as [AnyObject]
+            
             fields = [
-                chainID,
                 nonce,
                 maxPriorityFeePerGas,
                 maxFeePerGas,
@@ -322,8 +339,19 @@ extension EIP712Envelope {
                 to.addressData,
                 value,
                 data,
-                list
+                chainID,
+                "",
+                "",
+                chainID
             ] as [AnyObject]
+            
+            if let from = from {
+                fields.append(from as AnyObject)
+            }
+            
+            if let ergsPerPubdata = EIP712Meta?.ergsPerPubdata {
+                fields.append(ergsPerPubdata as AnyObject)
+            }
         }
         guard var result = RLP.encode(fields) else { return nil }
         result.insert(UInt8(self.type.rawValue), at: 0)

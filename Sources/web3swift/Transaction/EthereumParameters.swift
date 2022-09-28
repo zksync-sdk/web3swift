@@ -50,6 +50,8 @@ public struct EthereumParameters {
     /// access list for contract execution (EIP-2930 and EIP-1559 only)
     public var accessList: [AccessListEntry]?
     
+    public var from: String?
+    
     public var EIP712Meta: EIP712Meta?
 }
 
