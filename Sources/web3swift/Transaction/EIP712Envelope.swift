@@ -45,7 +45,7 @@ public struct EIP712Envelope: EIP2718Envelope {
     
     public var accessList: [AccessListEntry] // from EIP-2930
     
-    public var from: String?
+    public var from: EthereumAddress?
     
     public var EIP712Meta: EIP712Meta?
     
@@ -272,7 +272,9 @@ extension EIP712Envelope {
                 maxFeePerGas: BigUInt = 0,
                 gasLimit: BigUInt = 0,
                 accessList: [AccessListEntry]? = nil,
-                v: BigUInt = 1, r: BigUInt = 0, s: BigUInt = 0) {
+                v: BigUInt = 1,
+                r: BigUInt = 0,
+                s: BigUInt = 0) {
         self.to = to
         self.nonce = nonce
         self.chainID = chainID
@@ -294,6 +296,7 @@ extension EIP712Envelope {
         self.maxFeePerGas = options.resolveMaxFeePerGas(self.maxFeePerGas)
         self.gasLimit = options.resolveGasLimit(self.gasLimit)
         self.value = options.value ?? self.value
+        self.from = options.from ?? self.from
         self.to = options.to ?? self.to
         self.accessList = options.accessList ?? self.accessList
     }

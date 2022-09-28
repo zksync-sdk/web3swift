@@ -50,7 +50,7 @@ public struct EthereumParameters {
     /// access list for contract execution (EIP-2930 and EIP-1559 only)
     public var accessList: [AccessListEntry]?
     
-    public var from: String?
+    public var from: EthereumAddress?
     
     public var EIP712Meta: EIP712Meta?
 }
@@ -58,6 +58,7 @@ public struct EthereumParameters {
 public extension EthereumParameters {
     init(from opts: TransactionOptions) {
         self.type = opts.type
+        self.from = opts.from
         self.to = opts.to
         if opts.nonce != nil { self.nonce = opts.resolveNonce(0) }
         self.chainID = opts.chainID
