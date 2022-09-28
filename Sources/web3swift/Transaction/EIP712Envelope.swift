@@ -322,38 +322,47 @@ extension EIP712Envelope {
                 s
             ] as [AnyObject]
         case .signature:
-//            fields = [
-//                chainID,
-//                nonce,
-//                maxPriorityFeePerGas,
-//                maxFeePerGas,
-//                gasLimit,
-//                to.addressData,
-//                value,
-//                data,
-//                list
-//            ] as [AnyObject]
-            
             fields = [
-                nonce,
-                maxPriorityFeePerGas,
-                maxFeePerGas,
-                gasLimit,
-                to.addressData,
-                value,
-                data,
-                chainID,
-                "",
-                "",
-                chainID
+                nonce, // 0
+                maxPriorityFeePerGas, // 1
+                maxFeePerGas, // 2
+                gasLimit, // 3
+                to.addressData, // 4
+                value, // 5
+                data, // 6
+                chainID, // 7
+                "", // 8
+                "", // 9
+                chainID // 10
             ] as [AnyObject]
             
-            if let from = from {
+            // 11
+            if let from = from?.addressData {
                 fields.append(from as AnyObject)
             }
             
+            // 12
             if let ergsPerPubdata = EIP712Meta?.ergsPerPubdata {
                 fields.append(ergsPerPubdata as AnyObject)
+            }
+            
+            // 13
+            if let factoryDeps = EIP712Meta?.factoryDeps {
+                // TODO: Add EIP712Meta.factoryDeps if present.
+            }
+            
+            // 14
+            if let customSignature = EIP712Meta?.customSignature {
+                fields.append(customSignature as AnyObject)
+            } else {
+                fields.append(r as AnyObject)
+                fields.append(s as AnyObject)
+                fields.append(v as AnyObject)
+            }
+            
+            // 15
+            if let paymaster = EIP712Meta?.paymasterParams {
+                // TODO: Add EIP712Meta.paymasterParams if present.
             }
         }
         guard var result = RLP.encode(fields) else { return nil }
