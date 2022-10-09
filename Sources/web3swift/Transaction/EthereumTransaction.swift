@@ -12,7 +12,7 @@ import BigInt
 public struct EthereumTransaction: CustomStringConvertible {
     /// internal acccess only. The transaction envelope object itself that contains all the transaction data
     /// and type specific implementation
-    internal var envelope: AbstractEnvelope
+    public private(set) var envelope: AbstractEnvelope
 
     /// storage container for additional metadata returned by the node
     /// when a transaction is decoded form a JSON stream
