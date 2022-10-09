@@ -13,4 +13,8 @@ public extension BigUInt {
         guard let value = Web3.Utils.parseToBigUInt(naturalUnits, units: ethereumUnits) else {return nil}
         self = value
     }
+    
+    var data: Data {
+        serialize()
+    }
 }
