@@ -98,8 +98,8 @@ public struct PaymasterParams {
     
     public var paymasterInput: Data?
     
-    init(paymaster: String? = nil,
-         paymasterInput: Data? = nil) {
+    public init(paymaster: String? = nil,
+                paymasterInput: Data? = nil) {
         self.paymaster = paymaster
         self.paymasterInput = paymasterInput
     }
