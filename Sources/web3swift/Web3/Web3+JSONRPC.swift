@@ -52,6 +52,16 @@ public struct JSONRPCrequest: Encodable {
             return method.requiredNumOfParameters == self.params?.params.count
         }
     }
+    
+    public init(jsonrpc: String = "2.0",
+                method: JSONRPCmethod? = nil,
+                params: JSONRPCparams? = nil,
+                id: UInt64 = Counter.increment()) {
+        self.jsonrpc = jsonrpc
+        self.method = method
+        self.params = params
+        self.id = id
+    }
 }
 
 /// JSON RPC batch request structure for serialization and deserialization purposes.
@@ -296,5 +306,9 @@ public struct JSONRPCparams: Encodable{
                 try container.encode(p)
             }
         }
+    }
+    
+    public init(params: [Any] = [Any]()) {
+        self.params = params
     }
 }
