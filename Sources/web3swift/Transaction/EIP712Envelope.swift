@@ -335,20 +335,38 @@ extension EIP712Envelope {
                 "", // 9
                 chainID // 10
             ] as [AnyObject]
+
+            print("[EIP712 encoder] transactionType: \(BigUInt(UInt8(self.type.rawValue)).data.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] nonce: \(nonce.data.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] maxPriorityFeePerGas: \(maxPriorityFeePerGas.data.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] maxFeePerGas: \(maxFeePerGas.data.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] gasLimit: \(gasLimit.data.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] to: \(to.addressData.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] value: \(value.data.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] data: \(data.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] chainID: \(chainID.data.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] empty string: \("".data(using: .utf8)!.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] empty string: \("".data(using: .utf8)!.toHexString().addHexPrefix())")
+            print("[EIP712 encoder] chainID: \(chainID.data.toHexString().addHexPrefix())")
             
             // 11
             if let from = from?.addressData {
+                print("[EIP712 encoder] from: \(from.toHexString().addHexPrefix())")
                 fields.append(from as AnyObject)
             }
             
             // 12
             if let ergsPerPubdata = EIP712Meta?.ergsPerPubdata {
+                print("[EIP712 encoder] ergsPerPubdata: \(ergsPerPubdata.data.toHexString().addHexPrefix())")
                 fields.append(ergsPerPubdata as AnyObject)
             }
             
             // 13
             if let factoryDeps = EIP712Meta?.factoryDeps {
-                // TODO: Add EIP712Meta.factoryDeps if present.
+                factoryDeps.forEach {
+                    print("[EIP712 encoder] factoryDeps: \($0.toHexString().addHexPrefix())")
+                    fields.append($0 as AnyObject)
+                }
             } else {
                 fields.append([] as AnyObject)
             }
