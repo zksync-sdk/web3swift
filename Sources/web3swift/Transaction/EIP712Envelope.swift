@@ -79,7 +79,9 @@ public struct EIP712Envelope: EIP2718Envelope {
                                       gasLimit: gasLimit,
                                       maxFeePerGas: maxFeePerGas,
                                       maxPriorityFeePerGas: maxPriorityFeePerGas,
-                                      accessList: accessList)
+                                      accessList: accessList,
+                                      from: from,
+                                      EIP712Meta: EIP712Meta)
         }
         
         set(val) {
@@ -92,6 +94,8 @@ public struct EIP712Envelope: EIP2718Envelope {
             maxFeePerGas = val.maxFeePerGas ?? maxFeePerGas
             maxPriorityFeePerGas = val.maxPriorityFeePerGas ?? maxPriorityFeePerGas
             accessList = val.accessList ?? accessList
+            from = val.from ?? from
+            EIP712Meta = val.EIP712Meta ?? EIP712Meta
         }
     }
 }
