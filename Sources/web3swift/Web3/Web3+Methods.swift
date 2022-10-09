@@ -62,7 +62,7 @@ public enum JSONRPCmethod: String, Encodable {
                 .createAccount,
                 .getLogs,
                 .estimateGas,
-                .estimateFee
+                .estimateFee:
             return 1
         case .call,
                 .getTransactionCount,
