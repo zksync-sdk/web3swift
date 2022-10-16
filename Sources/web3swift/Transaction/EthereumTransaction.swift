@@ -212,7 +212,8 @@ public struct EthereumTransaction: CustomStringConvertible {
     /// - Parameter transaction: EthereumTransaction to encode
     /// - Returns: a JSONRPCrequest object
     static func createRawTransaction(transaction: EthereumTransaction) -> JSONRPCrequest? {
-        guard transaction.sender != nil else { return nil }
+        // TODO: Is this check required?
+        // guard transaction.sender != nil else { return nil }
         guard let encodedData = transaction.encode() else { return nil }
         let hex = encodedData.toHexString().addHexPrefix().lowercased()
         var request = JSONRPCrequest()
