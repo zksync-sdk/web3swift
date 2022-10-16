@@ -19,7 +19,12 @@ public struct EnvelopeFactory {
         // no valid transaction will be only 1 byte
         let typeUInt: UInt = UInt(rawValue[0])
         let envelopeType: TransactionType
-
+        
+        // Workaround for EIP712 support.
+        if typeUInt == 113 {
+            return EIP712Envelope(rawValue: rawValue)
+        }
+        
         if typeUInt < 0x80 {
             if typeUInt < TransactionType.allCases.count {
                 guard let rawType = TransactionType(rawValue: typeUInt) else { return nil }
