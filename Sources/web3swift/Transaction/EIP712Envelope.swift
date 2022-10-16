@@ -312,21 +312,6 @@ extension EIP712Envelope {
         switch type {
         case .transaction:
             fields = [
-                chainID,
-                nonce,
-                maxPriorityFeePerGas,
-                maxFeePerGas,
-                gasLimit,
-                to.addressData,
-                value,
-                data,
-                list,
-                v,
-                r,
-                s
-            ] as [AnyObject]
-        case .signature:
-            fields = [
                 nonce, // 0
                 maxPriorityFeePerGas, // 1
                 maxFeePerGas, // 2
@@ -379,9 +364,12 @@ extension EIP712Envelope {
             if let customSignature = EIP712Meta?.customSignature {
                 fields.append(customSignature as AnyObject)
             } else {
-                fields.append(r as AnyObject)
-                fields.append(s as AnyObject)
-                fields.append(v as AnyObject)
+                var customSignature = Data()
+                customSignature.append(r.data)
+                customSignature.append(s.data)
+                customSignature.append(v.data)
+                
+                fields.append(customSignature as AnyObject)
             }
             
             // 15
@@ -390,6 +378,8 @@ extension EIP712Envelope {
             } else {
                 fields.append([] as AnyObject)
             }
+        case .signature:
+            fatalError("Not supported.")
         }
         guard var result = RLP.encode(fields) else { return nil }
         result.insert(UInt8(self.type.rawValue), at: 0)
