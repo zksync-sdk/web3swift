@@ -354,8 +354,9 @@ extension EIP712Envelope {
             if let factoryDeps = EIP712Meta?.factoryDeps {
                 factoryDeps.forEach {
                     print("[EIP712 encoder] factoryDeps: \($0.toHexString().addHexPrefix())")
-                    fields.append($0 as AnyObject)
                 }
+                
+                fields.append(factoryDeps as AnyObject)
             } else {
                 fields.append([] as AnyObject)
             }
