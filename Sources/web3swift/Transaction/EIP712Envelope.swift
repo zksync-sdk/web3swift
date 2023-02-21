@@ -345,9 +345,9 @@ extension EIP712Envelope {
             }
             
             // 12
-            if let ergsPerPubdata = EIP712Meta?.ergsPerPubdata {
-                print("[EIP712 encoder] ergsPerPubdata: \(ergsPerPubdata.data.toHexString().addHexPrefix())")
-                fields.append(ergsPerPubdata as AnyObject)
+            if let gasPerPubdata = EIP712Meta?.gasPerPubdata {
+                print("[EIP712 encoder] gasPerPubdata: \(gasPerPubdata.data.toHexString().addHexPrefix())")
+                fields.append(gasPerPubdata as AnyObject)
             }
             
             // 13
