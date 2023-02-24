@@ -73,7 +73,7 @@ public extension EthereumParameters {
 
 public struct EIP712Meta {
     
-    public var ergsPerPubdata: BigUInt?
+    public var gasPerPubdata: BigUInt?
     
     public var customSignature: Data? = Data()
     
@@ -81,11 +81,11 @@ public struct EIP712Meta {
     
     public var factoryDeps: [Data]?
     
-    public init(ergsPerPubdata: BigUInt? = nil,
+    public init(gasPerPubdata: BigUInt? = nil,
                 customSignature: Data? = Data(),
                 paymasterParams: PaymasterParams? = nil,
                 factoryDeps: [Data]? = nil) {
-        self.ergsPerPubdata = ergsPerPubdata
+        self.gasPerPubdata = gasPerPubdata
         self.customSignature = customSignature
         self.paymasterParams = paymasterParams
         self.factoryDeps = factoryDeps
