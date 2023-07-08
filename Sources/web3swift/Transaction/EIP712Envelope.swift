@@ -274,7 +274,7 @@ extension EIP712Envelope {
             paymasterParams = PaymasterParams(paymaster: paymasterAddress, paymasterInput: paymasterInput)
         }
         
-        self.EIP712Meta = web3swift_zksync.EIP712Meta(gasPerPubdata: gasPerPubdata, customSignature: customSignature, paymasterParams: paymasterParams, factoryDeps: factoryDeps)
+        self.EIP712Meta = web3swift_zksync2.EIP712Meta(gasPerPubdata: gasPerPubdata, customSignature: customSignature, paymasterParams: paymasterParams, factoryDeps: factoryDeps)
         
         switch rlpItem[RlpKey.from.rawValue]!.content {
             // swiftlint:enable force_unwrapping
