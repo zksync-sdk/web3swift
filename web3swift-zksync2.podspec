@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = 'web3swift-zksync2'
-    spec.version      = '2.6.5-zksync'
+    spec.version      = '2.6.5-zksync2'
     spec.ios.deployment_target = "13.0"
     spec.osx.deployment_target = "10.13"
     spec.license      = { :type => 'Apache License 2.0', :file => 'LICENSE.md' }
