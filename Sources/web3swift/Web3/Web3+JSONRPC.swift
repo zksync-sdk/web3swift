@@ -271,6 +271,7 @@ public struct TransactionParameters: Codable {
     public var accessList: [AccessListEntry]? // EIP-1559 & EIP-2930
     public var to: String?
     public var value: String? = "0x0"
+    public var eip712Meta: EIP712Meta?
 
     public init(from _from: String?, to _to: String?) {
         from = _from

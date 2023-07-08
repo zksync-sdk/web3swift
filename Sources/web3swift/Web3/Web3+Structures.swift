@@ -7,6 +7,32 @@
 import Foundation
 import BigInt
 
+public struct L2ToL1Log: Decodable {
+//    public let blockNumber: BigUInt
+//    public let blockHash: Data
+//    public let l1BatchNumber: BigUInt
+//    public let transactionIndex: UInt
+//    public let shardId: UInt
+//    public let isService: Bool
+    public let sender: EthereumAddress
+//    public let key: String
+//    public let value: String
+//    public let transactionHash: String
+    public let logIndex: UInt
+    
+    enum CodingKeys: String, CodingKey {
+        case sender
+        case logIndex
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.sender = try container.decode(EthereumAddress.self, forKey: .sender)
+        self.logIndex = try container.decodeHex(UInt.self, forKey: .logIndex)
+    }
+}
+
 public struct TransactionDetails: Decodable {
     public var blockHash: Data?
     public var blockNumber: BigUInt?
@@ -31,12 +57,15 @@ public struct TransactionDetails: Decodable {
 public struct TransactionReceipt: Decodable {
     public var transactionHash: Data
     public var blockHash: Data
+    public var l1BatchNumber: BigUInt
+    public var l1BatchTxIndex: UInt
     public var blockNumber: BigUInt
     public var transactionIndex: BigUInt
     public var contractAddress: EthereumAddress?
     public var cumulativeGasUsed: BigUInt
     public var gasUsed: BigUInt
     public var logs: [EventLog]
+    public var l2ToL1Logs: [L2ToL1Log]?
     public var status: TXStatus
     public var logsBloom: EthereumBloomFilter?
 
@@ -49,18 +78,21 @@ public struct TransactionReceipt: Decodable {
     enum CodingKeys: String, CodingKey {
         case blockHash
         case blockNumber
+        case l1BatchNumber
+        case l1BatchTxIndex
         case transactionHash
         case transactionIndex
         case contractAddress
         case cumulativeGasUsed
         case gasUsed
         case logs
+        case l2ToL1Logs
         case logsBloom
         case status
     }
 
     static func notProcessed(transactionHash: Data) -> TransactionReceipt {
-        TransactionReceipt(transactionHash: transactionHash, blockHash: Data(), blockNumber: BigUInt(0), transactionIndex: BigUInt(0), contractAddress: nil, cumulativeGasUsed: BigUInt(0), gasUsed: BigUInt(0), logs: [EventLog](), status: .notYetProcessed, logsBloom: nil)
+        TransactionReceipt(transactionHash: transactionHash, blockHash: Data(), l1BatchNumber: BigUInt(0), l1BatchTxIndex: 0, blockNumber: BigUInt(0), transactionIndex: BigUInt(0), contractAddress: nil, cumulativeGasUsed: BigUInt(0), gasUsed: BigUInt(0), logs: [EventLog](), l2ToL1Logs: nil, status: .notYetProcessed, logsBloom: nil)
     }
 }
 
@@ -69,7 +101,11 @@ extension TransactionReceipt {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.blockNumber = try container.decodeHex(BigUInt.self, forKey: .blockNumber)
-
+        
+        self.l1BatchNumber = try container.decodeHex(BigUInt.self, forKey: .l1BatchNumber)
+        
+        self.l1BatchTxIndex = try container.decodeHex(UInt.self, forKey: .l1BatchTxIndex)
+        
         self.blockHash = try container.decodeHex(Data.self, forKey: .blockHash)
 
         self.transactionIndex = try container.decodeHex(BigUInt.self, forKey: .transactionIndex)
@@ -90,6 +126,8 @@ extension TransactionReceipt {
         }
 
         self.logs = try container.decode([EventLog].self, forKey: .logs)
+        
+        self.l2ToL1Logs = try? container.decodeIfPresent([L2ToL1Log].self, forKey: .l2ToL1Logs)
     }
 }
 

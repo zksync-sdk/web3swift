@@ -157,18 +157,22 @@ extension EIP712Envelope {
     }
     
     private enum RlpKey: Int, CaseIterable {
-        case chainId
         case nonce
         case maxPriorityFeePerGas
         case maxFeePerGas
         case gasLimit
-        case destination
-        case amount
+        case to
+        case value
         case data
-        case accessList
-        case sig_v
-        case sig_r
-        case sig_s
+        case chainID1
+        case undefined1
+        case undefined2
+        case chainID2
+        case from
+        case gasPerPubdata
+        case factoryDeps
+        case customSignature
+        case paymasterParams
     }
     
     public init?(rawValue: Data) {
@@ -182,31 +186,113 @@ extension EIP712Envelope {
         
         // we've validated the item count, so rlpItem[keyName] is guaranteed to return something not nil
         // swiftlint:disable force_unwrapping
-        guard let chainData = rlpItem[RlpKey.chainId.rawValue]!.data else { return nil }
+        guard let chain1Data = rlpItem[RlpKey.chainID1.rawValue]!.data else { return nil }
+        guard let chain2Data = rlpItem[RlpKey.chainID2.rawValue]!.data else { return nil }
         guard let nonceData = rlpItem[RlpKey.nonce.rawValue]!.data else { return nil }
         guard let maxPriorityData = rlpItem[RlpKey.maxPriorityFeePerGas.rawValue]!.data else { return nil }
         guard let maxFeeData = rlpItem[RlpKey.maxFeePerGas.rawValue]!.data else { return nil }
         guard let gasLimitData = rlpItem[RlpKey.gasLimit.rawValue]!.data else { return nil }
-        guard let valueData = rlpItem[RlpKey.amount.rawValue]!.data else { return nil }
+        guard let valueData = rlpItem[RlpKey.value.rawValue]!.data else { return nil }
         guard let transactionData = rlpItem[RlpKey.data.rawValue]!.data else { return nil }
-        guard let vData = rlpItem[RlpKey.sig_v.rawValue]!.data else { return nil }
-        guard let rData = rlpItem[RlpKey.sig_r.rawValue]!.data else { return nil }
-        guard let sData = rlpItem[RlpKey.sig_s.rawValue]!.data else { return nil }
+        guard let signature = rlpItem[RlpKey.customSignature.rawValue]!.data else { return nil }
+        guard let unmarshalledSignature = SECP256K1.unmarshalSignature(signatureData: signature) else { return nil }
+        let rData = unmarshalledSignature.r
+        let sData = unmarshalledSignature.s
+        let vData = unmarshalledSignature.v
+        
         // swiftlint:enable force_unwrapping
         
-        self.chainID = BigUInt(chainData)
+        self.chainID = BigUInt(chain1Data)
+        self.chainID = BigUInt(chain2Data)
         self.nonce = BigUInt(nonceData)
         self.maxPriorityFeePerGas = BigUInt(maxPriorityData)
         self.maxFeePerGas = BigUInt(maxFeeData)
         self.gasLimit = BigUInt(gasLimitData)
         self.value = BigUInt(valueData)
         self.data = transactionData
-        self.v = BigUInt(vData)
         self.r = BigUInt(rData)
         self.s = BigUInt(sData)
+        self.v = BigUInt(vData)
+        
+        var factoryDeps: [Data] = []
+        switch rlpItem[RlpKey.factoryDeps.rawValue]!.content {
+            // swiftlint:enable force_unwrapping
+        case .noItem:
+            factoryDeps = []
+        case .data:
+            factoryDeps = []
+        case .list:
+            // decode the list here
+            // swiftlint:disable force_unwrapping
+            let keyData = rlpItem[RlpKey.factoryDeps.rawValue]!
+            // swiftlint:enable force_unwrapping
+            let itemCount = keyData.count ?? 0
+            var newList: [Data] = []
+            for index in 0...(itemCount - 1) {
+                guard let keyItem = keyData[index] else { return nil }
+                guard let itemData = keyItem.data else { return nil }
+                let newItem = itemData
+                newList.append(newItem)
+            }
+            factoryDeps = newList
+        }
+        
+        var gasPerPubdata: BigUInt?
+        if let data = rlpItem[RlpKey.gasPerPubdata.rawValue]?.data {
+            gasPerPubdata = BigUInt(data)
+        }
+        let customSignature = rlpItem[RlpKey.customSignature.rawValue]?.data
+        
+        var paymasterParams: PaymasterParams?
+        switch rlpItem[RlpKey.paymasterParams.rawValue]!.content {
+            // swiftlint:enable force_unwrapping
+        case .noItem:
+            paymasterParams = nil
+        case .data:
+            paymasterParams = nil
+        case .list:
+            // decode the list here
+            // swiftlint:disable force_unwrapping
+            let keyData = rlpItem[RlpKey.paymasterParams.rawValue]!
+            // swiftlint:enable force_unwrapping
+            let itemCount = keyData.count ?? 0
+            var paymasterAddress: EthereumAddress?
+            var paymasterInput: Data?
+            for index in 0...(itemCount - 1) {
+                guard let keyItem = keyData[index] else { return nil }
+                guard let itemData = keyItem.data else { return nil }
+                let newItem = itemData
+                
+                if newItem.count == 20 {
+                    guard let addr = EthereumAddress(newItem) else { return nil }
+                    paymasterAddress = addr
+                } else {
+                    paymasterInput = newItem
+                }
+            }
+            
+            paymasterParams = PaymasterParams(paymaster: paymasterAddress, paymasterInput: paymasterInput)
+        }
+        
+        self.EIP712Meta = web3swift_zksync.EIP712Meta(gasPerPubdata: gasPerPubdata, customSignature: customSignature, paymasterParams: paymasterParams, factoryDeps: factoryDeps)
+        
+        switch rlpItem[RlpKey.from.rawValue]!.content {
+            // swiftlint:enable force_unwrapping
+        case .noItem:
+            self.from = nil
+        case .data(let addressData):
+            if addressData.count == 0 {
+                self.from = nil
+            } else if addressData.count == 20 {
+                guard let addr = EthereumAddress(addressData) else { return nil }
+                self.from = addr
+            } else { return nil }
+        case .list:
+            return nil
+        }
         
         // swiftlint:disable force_unwrapping
-        switch rlpItem[RlpKey.destination.rawValue]!.content {
+        switch rlpItem[RlpKey.to.rawValue]!.content {
             // swiftlint:enable force_unwrapping
         case .noItem:
             self.to = EthereumAddress.contractDeploymentAddress()
@@ -221,27 +307,7 @@ extension EIP712Envelope {
             return nil
         }
         
-        // swiftlint:disable force_unwrapping
-        switch rlpItem[RlpKey.accessList.rawValue]!.content {
-            // swiftlint:enable force_unwrapping
-        case .noItem:
-            self.accessList = []
-        case .data:
-            return nil
-        case .list:
-            // decode the list here
-            // swiftlint:disable force_unwrapping
-            let accessData = rlpItem[RlpKey.accessList.rawValue]!
-            // swiftlint:enable force_unwrapping
-            let itemCount = accessData.count ?? 0
-            var newList: [AccessListEntry] = []
-            for index in 0...(itemCount - 1) {
-                guard let itemData = accessData[index] else { return nil }
-                guard let newItem = AccessListEntry(rlpItem: itemData)  else { return nil }
-                newList.append(newItem)
-            }
-            self.accessList = newList
-        }
+        self.accessList = []
     }
     
     public init(to: EthereumAddress,
@@ -307,7 +373,6 @@ extension EIP712Envelope {
     
     public func encode(for type: EncodeType = .transaction) -> Data? {
         var fields: [AnyObject]
-        let list = accessList.map { $0.encodeAsList() as AnyObject }
         
         switch type {
         case .transaction:
@@ -342,12 +407,16 @@ extension EIP712Envelope {
             if let from = from?.addressData {
                 print("[EIP712 encoder] from: \(from.toHexString().addHexPrefix())")
                 fields.append(from as AnyObject)
+            } else {
+                fields.append(Data() as AnyObject)
             }
             
             // 12
             if let gasPerPubdata = EIP712Meta?.gasPerPubdata {
                 print("[EIP712 encoder] gasPerPubdata: \(gasPerPubdata.data.toHexString().addHexPrefix())")
                 fields.append(gasPerPubdata as AnyObject)
+            } else {
+                fields.append(BigUInt(0) as AnyObject)
             }
             
             // 13
@@ -369,18 +438,18 @@ extension EIP712Envelope {
                 customSignature.append(r.data)
                 customSignature.append(s.data)
                 customSignature.append(v.data)
-                
+
                 fields.append(customSignature as AnyObject)
             }
             
             // 15
-            if let paymaster = EIP712Meta?.paymasterParams {
-                // TODO: Add EIP712Meta.paymasterParams if present.
+            if let paymasterParams = EIP712Meta?.paymasterParams, let paymaster = paymasterParams.paymaster, let paymasterInput = paymasterParams.paymasterInput {
+                fields.append([paymaster.addressData, paymasterInput] as AnyObject)
             } else {
                 fields.append([] as AnyObject)
             }
         case .signature:
-            fatalError("Not supported.")
+            fatalError("Not supported")
         }
         guard var result = RLP.encode(fields) else { return nil }
         result.insert(UInt8(self.type.rawValue), at: 0)
@@ -415,6 +484,7 @@ extension EIP712Envelope {
         let valueEncoding = self.value.abiEncode(bits: 256)
         params.value = valueEncoding?.toHexString().addHexPrefix().stripLeadingZeroes()
         params.data = self.data.toHexString().addHexPrefix()
+        params.eip712Meta = self.EIP712Meta
         return params
     }
 }
