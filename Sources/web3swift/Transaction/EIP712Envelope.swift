@@ -277,7 +277,7 @@ extension EIP712Envelope {
         #if canImport(web3swift_zksync2)
         self.EIP712Meta = web3swift_zksync2.EIP712Meta(gasPerPubdata: gasPerPubdata, customSignature: customSignature, paymasterParams: paymasterParams, factoryDeps: factoryDeps)
         #else
-        self.EIP712Meta = EIP712Meta(gasPerPubdata: gasPerPubdata, customSignature: customSignature, paymasterParams: paymasterParams, factoryDeps: factoryDeps)
+        self.EIP712Meta = web3swift.EIP712Meta(gasPerPubdata: gasPerPubdata, customSignature: customSignature, paymasterParams: paymasterParams, factoryDeps: factoryDeps)
         #endif
         
         switch rlpItem[RlpKey.from.rawValue]!.content {
