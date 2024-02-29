@@ -91,6 +91,8 @@ public struct CodableTransaction {
         get { return envelope.maxPriorityFeePerGas }
         set { return envelope.maxPriorityFeePerGas = newValue }
     }
+    
+    public var eip712Meta: EIP712Meta?
 
     public var callOnBlock: BlockNumber?
 
