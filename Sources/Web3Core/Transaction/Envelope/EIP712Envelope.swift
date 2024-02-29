@@ -48,7 +48,7 @@ public struct EIP712Envelope: EIP2718Envelope {
 
     public var from: EthereumAddress?
 
-    public var EIP712Meta: EIP712Meta?
+    public var eip712Meta: EIP712Meta?
 
     // for CustomStringConvertible
     public var description: String {
@@ -244,7 +244,7 @@ extension EIP712Envelope {
             paymasterParams = PaymasterParams(paymaster: paymasterAddress, paymasterInput: paymasterInput)
         }
 
-        self.EIP712Meta = Web3Core.EIP712Meta(gasPerPubdata: gasPerPubdata, customSignature: customSignature, paymasterParams: paymasterParams, factoryDeps: factoryDeps)
+        self.eip712Meta = Web3Core.EIP712Meta(gasPerPubdata: gasPerPubdata, customSignature: customSignature, paymasterParams: paymasterParams, factoryDeps: factoryDeps)
 
         switch rlpItem[RlpKey.from.rawValue]!.content {
             // swiftlint:enable force_unwrapping
@@ -307,7 +307,7 @@ extension EIP712Envelope {
         self.gasLimit = gasLimit ?? 0
         self.accessList = accessList ?? []
         self.from = from
-        self.EIP712Meta = eip712Meta
+        self.eip712Meta = eip712Meta
     }
 
     // memberwise
@@ -378,7 +378,7 @@ extension EIP712Envelope {
             }
 
             // 12
-            if let gasPerPubdata = EIP712Meta?.gasPerPubdata {
+            if let gasPerPubdata = eip712Meta?.gasPerPubdata {
                 print("[EIP712 encoder] gasPerPubdata: \(gasPerPubdata.data.toHexString().addHexPrefix())")
                 fields.append(gasPerPubdata as AnyObject)
             } else {
@@ -386,7 +386,7 @@ extension EIP712Envelope {
             }
 
             // 13
-            if let factoryDeps = EIP712Meta?.factoryDeps {
+            if let factoryDeps = eip712Meta?.factoryDeps {
                 factoryDeps.forEach {
                     print("[EIP712 encoder] factoryDeps: \($0.toHexString().addHexPrefix())")
                 }
@@ -397,7 +397,7 @@ extension EIP712Envelope {
             }
 
             // 14
-            if let customSignature = EIP712Meta?.customSignature {
+            if let customSignature = eip712Meta?.customSignature {
                 fields.append(customSignature as AnyObject)
             } else {
                 var customSignature = Data()
@@ -409,7 +409,7 @@ extension EIP712Envelope {
             }
 
             // 15
-            if let paymasterParams = EIP712Meta?.paymasterParams, let paymaster = paymasterParams.paymaster, let paymasterInput = paymasterParams.paymasterInput {
+            if let paymasterParams = eip712Meta?.paymasterParams, let paymaster = paymasterParams.paymaster, let paymasterInput = paymasterParams.paymasterInput {
                 fields.append([paymaster.addressData, paymasterInput] as AnyObject)
             } else {
                 fields.append([] as AnyObject)
