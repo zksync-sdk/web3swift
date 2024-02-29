@@ -19,7 +19,12 @@ public struct EnvelopeFactory {
         // no valid transaction will be only 1 byte
         let typeUInt: UInt = UInt(rawValue[0])
         let envelopeType: TransactionType
-
+        
+        // Workaround for EIP712 support.
+        if typeUInt == 113 {
+            return EIP712Envelope(rawValue: rawValue)
+        }
+        
         if typeUInt < 0x80 {
             if typeUInt < TransactionType.allCases.count {
                 guard let rawType = TransactionType(rawValue: typeUInt) else { return nil }
@@ -33,6 +38,7 @@ public struct EnvelopeFactory {
         case .legacy: return LegacyEnvelope(rawValue: rawValue)
         case .eip2930: return EIP2930Envelope(rawValue: rawValue)
         case .eip1559: return EIP1559Envelope(rawValue: rawValue)
+        case .eip712: return EIP712Envelope(rawValue: rawValue)
         }
     }
 
@@ -61,6 +67,7 @@ public struct EnvelopeFactory {
         case .legacy: return try LegacyEnvelope(from: decoder)
         case .eip2930: return try EIP2930Envelope(from: decoder)
         case .eip1559: return try EIP1559Envelope(from: decoder)
+        case .eip712: return try EIP712Envelope(from: decoder)
         }
     }
 

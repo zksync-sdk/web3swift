@@ -12,6 +12,9 @@ public extension BigUInt {
         guard let value = Utilities.parseToBigUInt(naturalUnits, units: ethereumUnits) else { return nil }
         self = value
     }
+    var data: Data {
+        serialize()
+    }
 }
 
 #if COCOAPODS

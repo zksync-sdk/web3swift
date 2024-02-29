@@ -31,6 +31,8 @@ public enum TransactionType: UInt, CustomStringConvertible, CaseIterable {
 
     /// For type 2 transactions conforming to EIP1559
     case eip1559
+    
+    case eip712 = 0x71
 
     /// range-checking value, not a valid type, will never be returned as a type
     // case total // always keep immediately after last valid type
@@ -42,6 +44,7 @@ public enum TransactionType: UInt, CustomStringConvertible, CaseIterable {
         //                                 though nodes do appear to return a type of 0 for legacy transactions in their JSON
         case .eip2930: return "EIP-2930"
         case .eip1559: return "EIP-1559"
+        case .eip712: return "EIP-712"
         }
     }
 }
