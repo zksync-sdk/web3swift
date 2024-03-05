@@ -10,8 +10,8 @@ import Web3Core
 extension Web3 {
 
     /// The contract instance. Initialized in runtime from ABI string (that is a JSON array). In addition an existing contract address can be supplied to provide the default "to" address in all the following requests. ABI version is 2 by default and should not be changed.
-    public func contract(_ abiString: String, at: EthereumAddress? = nil, abiVersion: Int = 2) -> Contract? {
-        return Contract(web3: self, abiString: abiString, at: at, abiVersion: abiVersion)
+    public func contract(_ abiString: String, at: EthereumAddress? = nil, abiVersion: Int = 2, transaction: CodableTransaction = .emptyTransaction) -> Contract? {
+        return Contract(web3: self, abiString: abiString, at: at, transaction: transaction, abiVersion: abiVersion)
     }
 
     // FIXME: Rewrite this to CodableTransaction
