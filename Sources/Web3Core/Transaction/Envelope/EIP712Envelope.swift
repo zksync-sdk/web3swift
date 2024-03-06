@@ -291,6 +291,7 @@ extension EIP712Envelope {
                 maxPriorityFeePerGas: BigUInt? = nil,
                 maxFeePerGas: BigUInt? = nil,
                 gasLimit: BigUInt? = nil,
+                gasPrice: BigUInt? = nil,
                 accessList: [AccessListEntry]? = nil,
                 from: EthereumAddress? = nil,
                 eip712Meta: EIP712Meta? = nil) {
@@ -305,6 +306,7 @@ extension EIP712Envelope {
         self.maxPriorityFeePerGas = maxPriorityFeePerGas ?? 0
         self.maxFeePerGas = maxFeePerGas ?? 0
         self.gasLimit = gasLimit ?? 0
+        self.gasPrice = gasPrice ?? 0
         self.accessList = accessList ?? []
         self.from = from
         self.eip712Meta = eip712Meta
@@ -312,7 +314,6 @@ extension EIP712Envelope {
 
     // memberwise
     public init(to: EthereumAddress,
-                from: EthereumAddress,
                 nonce: BigUInt = 0,
                 chainID: BigUInt = 0,
                 value: BigUInt = 0,
@@ -321,12 +322,10 @@ extension EIP712Envelope {
                 maxFeePerGas: BigUInt = 0,
                 gasLimit: BigUInt = 0,
                 accessList: [AccessListEntry]? = nil,
-                eip712Meta: EIP712Meta? = nil,
                 v: BigUInt = 1,
                 r: BigUInt = 0,
                 s: BigUInt = 0) {
         self.to = to
-        self.from = from
         self.nonce = nonce
         self.chainID = chainID
         self.value = value
@@ -335,7 +334,6 @@ extension EIP712Envelope {
         self.maxFeePerGas = maxFeePerGas
         self.gasLimit = gasLimit
         self.accessList = accessList ?? []
-        self.eip712Meta = eip712Meta
         self.v = v
         self.r = r
         self.s = s

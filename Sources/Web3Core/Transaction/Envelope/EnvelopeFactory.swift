@@ -93,7 +93,7 @@ public struct EnvelopeFactory {
         switch envelopeType {
         case .eip2930: return EIP2930Envelope(to: to, nonce: nonce, chainID: chainID, value: value, data: data, gasPrice: gasPrice ?? 0, gasLimit: gasLimit, accessList: accessList, v: v, r: r, s: s)
         case .eip1559: return EIP1559Envelope(to: to, nonce: nonce, chainID: chainID, value: value, data: data, maxPriorityFeePerGas: maxPriorityFeePerGas ?? 0, maxFeePerGas: maxFeePerGas ?? 0, gasLimit: gasLimit, accessList: accessList, v: v, r: r, s: s)
-        case .eip712: return EIP712Envelope(to: to, nonce: nonce, chainID: chainID, value: value, data: data, maxPriorityFeePerGas: maxPriorityFeePerGas ?? 0, maxFeePerGas: maxFeePerGas ?? 0, gasLimit: gasLimit, accessList: accessList, v: v, r: r, s: s)
+        case .eip712: return EIP712Envelope(to: to,nonce: nonce,v: v,r: r,s: s,chainID: chainID,value: value,data: data,maxPriorityFeePerGas: maxPriorityFeePerGas,maxFeePerGas: maxFeePerGas,gasLimit: gasLimit,gasPrice: gasPrice,accessList: accessList,from: from,eip712Meta: eip712Meta)
         default: return LegacyEnvelope(to: to, nonce: nonce, chainID: chainID, value: value, data: data, gasPrice: gasPrice ?? 0, gasLimit: gasLimit, v: v, r: r, s: s)
         }
     }
