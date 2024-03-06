@@ -86,7 +86,8 @@ public struct EnvelopeFactory {
     static func createEnvelope(type: TransactionType? = nil, to: EthereumAddress, nonce: BigUInt,
                                chainID: BigUInt, value: BigUInt, data: Data,
                                gasLimit: BigUInt, maxFeePerGas: BigUInt?, maxPriorityFeePerGas: BigUInt?, gasPrice: BigUInt?,
-                               accessList: [AccessListEntry]?, v: BigUInt, r: BigUInt, s: BigUInt) -> AbstractEnvelope {
+                               accessList: [AccessListEntry]?, v: BigUInt, r: BigUInt, s: BigUInt, eip712Meta: EIP712Meta? = nil,
+                               from: EthereumAddress? = nil) -> AbstractEnvelope {
         let envelopeType: TransactionType = type ?? .legacy
 
         switch envelopeType {

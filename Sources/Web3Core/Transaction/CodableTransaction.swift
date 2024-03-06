@@ -296,10 +296,11 @@ extension CodableTransaction {
     public init(type: TransactionType? = nil, to: EthereumAddress, nonce: BigUInt = 0,
                 chainID: BigUInt = 0, value: BigUInt = 0, data: Data = Data(),
                 gasLimit: BigUInt = 0, maxFeePerGas: BigUInt? = nil, maxPriorityFeePerGas: BigUInt? = nil, gasPrice: BigUInt? = nil,
-                accessList: [AccessListEntry]? = nil, v: BigUInt = 1, r: BigUInt = 0, s: BigUInt = 0) {
+                accessList: [AccessListEntry]? = nil, v: BigUInt = 1, r: BigUInt = 0, s: BigUInt = 0, eip712Meta: EIP712Meta? = nil,
+                from: EthereumAddress? = nil) {
         callOnBlock = .latest
 
-        envelope = EnvelopeFactory.createEnvelope(type: type, to: to, nonce: nonce, chainID: chainID, value: value, data: data, gasLimit: gasLimit, maxFeePerGas: maxFeePerGas, maxPriorityFeePerGas: maxPriorityFeePerGas, gasPrice: gasPrice, accessList: accessList, v: v, r: r, s: s)
+        envelope = EnvelopeFactory.createEnvelope(type: type, to: to, nonce: nonce, chainID: chainID, value: value, data: data, gasLimit: gasLimit, maxFeePerGas: maxFeePerGas, maxPriorityFeePerGas: maxPriorityFeePerGas, gasPrice: gasPrice, accessList: accessList, v: v, r: r, s: s, eip712Meta: eip712Meta, from: from)
     }
 }
 
