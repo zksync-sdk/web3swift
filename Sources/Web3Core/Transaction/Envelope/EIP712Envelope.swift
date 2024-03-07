@@ -417,7 +417,20 @@ extension EIP712Envelope {
                 fields.append([] as AnyObject)
             }
         case .signature:
-            fatalError("Not supported")
+            fields = [
+                nonce,
+                maxPriorityFeePerGas,
+                maxFeePerGas,
+                gasLimit,
+                to.addressData,
+                from?.address,
+                value,
+                data,
+                chainID,
+                gasPrice,
+                accessList,
+                eip712Meta
+            ] as [AnyObject]
         }
         guard var result = RLP.encode(fields) else { return nil }
         result.insert(UInt8(self.type.rawValue), at: 0)
