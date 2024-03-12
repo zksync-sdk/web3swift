@@ -78,12 +78,12 @@ extension TransactionReceipt: Decodable {
         }
 
         self.logs = try container.decode([EventLog].self, forKey: .logs)
+        
+        self.l2ToL1Logs = try? container.decodeIfPresent([L2ToL1Log].self, forKey: .l2ToL1Logs)
 
         if let hexBytes = try? container.decodeHex(Data.self, forKey: .logsBloom) {
             self.logsBloom = EthereumBloomFilter(hexBytes)
         }
-        
-        self.l2ToL1Logs = try? container.decodeIfPresent([L2ToL1Log].self, forKey: .l2ToL1Logs)
     }
 }
 
@@ -101,7 +101,7 @@ public struct L2ToL1Log: Decodable {
     
     let isService: Bool
     
-    let sender: String
+    let sender: EthereumAddress
     
     let key: String
     
@@ -110,6 +110,36 @@ public struct L2ToL1Log: Decodable {
     let transactionHash: String
     
     let logIndex: UInt
+    
+    enum CodingKeys: String, CodingKey {
+        case blockNumber
+        case blockHash
+        case l1BatchNumber
+        case transactionIndex
+        case shardId
+        case isService
+        case sender
+        case key
+        case value
+        case transactionHash
+        case logIndex
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.blockNumber = try container.decodeHex(BigUInt.self, forKey: .blockNumber)
+        self.blockHash = try container.decodeHex(Data.self, forKey: .blockHash)
+        self.l1BatchNumber = try container.decodeHex(BigUInt.self, forKey: .l1BatchNumber)
+        self.transactionIndex = try container.decodeHex(UInt.self, forKey: .transactionIndex)
+        self.shardId = try container.decodeHex(UInt.self, forKey: .shardId)
+        self.isService = try container.decode(Bool.self, forKey: .isService)
+        self.sender = try container.decode(EthereumAddress.self, forKey: .sender)
+        self.key = try container.decode(String.self, forKey: .key)
+        self.value = try container.decode(String.self, forKey: .value)
+        self.transactionHash = try container.decode(String.self, forKey: .transactionHash)
+        self.logIndex = try container.decodeHex(UInt.self, forKey: .logIndex)
+    }
 }
 
 extension TransactionReceipt: APIResultType { }
