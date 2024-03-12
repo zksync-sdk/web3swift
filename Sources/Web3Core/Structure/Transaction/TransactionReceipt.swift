@@ -89,27 +89,27 @@ extension TransactionReceipt: Decodable {
 
 public struct L2ToL1Log: Decodable {
     
-    let blockNumber: BigUInt
+    public let blockNumber: BigUInt
     
-    let blockHash: Data
+    public let blockHash: Data
     
-    let l1BatchNumber: BigUInt
+    public let l1BatchNumber: BigUInt
     
-    let transactionIndex: UInt
+    public let transactionIndex: UInt
     
-    let shardId: UInt
+    public let shardId: UInt
     
-    let isService: Bool
+    public let isService: Bool
     
-    let sender: EthereumAddress
+    public let sender: EthereumAddress
     
-    let key: String
+    public let key: String
     
-    let value: String
+    public let value: String
     
-    let transactionHash: String
+    public let transactionHash: String
     
-    let logIndex: UInt
+    public let logIndex: UInt
     
     enum CodingKeys: String, CodingKey {
         case blockNumber
