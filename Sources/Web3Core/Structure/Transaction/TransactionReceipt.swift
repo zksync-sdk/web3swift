@@ -12,6 +12,7 @@ public struct TransactionReceipt {
     public var transactionHash: Data
     public var blockHash: Data
     public var l1BatchNumber: BigUInt?
+    public var l1BatchTxIndex: UInt?
     public var blockNumber: BigUInt
     public var transactionIndex: BigUInt
     public var contractAddress: EthereumAddress?
@@ -24,7 +25,7 @@ public struct TransactionReceipt {
     public var logsBloom: EthereumBloomFilter?
 
     static func notProcessed(transactionHash: Data) -> TransactionReceipt {
-        TransactionReceipt(transactionHash: transactionHash, blockHash: Data(), l1BatchNumber: BigUInt(0), blockNumber: 0, transactionIndex: 0, contractAddress: nil, cumulativeGasUsed: 0, gasUsed: 0, effectiveGasPrice: 0, logs: [], l2ToL1Logs: nil, status: .notYetProcessed, logsBloom: nil)
+        TransactionReceipt(transactionHash: transactionHash, blockHash: Data(), l1BatchNumber: BigUInt(0), l1BatchTxIndex: 0, blockNumber: 0, transactionIndex: 0, contractAddress: nil, cumulativeGasUsed: 0, gasUsed: 0, effectiveGasPrice: 0, logs: [], l2ToL1Logs: nil, status: .notYetProcessed, logsBloom: nil)
     }
 }
 
@@ -40,6 +41,7 @@ extension TransactionReceipt: Decodable {
     enum CodingKeys: String, CodingKey {
         case blockHash
         case l1BatchNumber
+        case l1BatchTxIndex
         case blockNumber
         case transactionHash
         case transactionIndex
@@ -59,6 +61,8 @@ extension TransactionReceipt: Decodable {
         self.blockNumber = try container.decodeHex(BigUInt.self, forKey: .blockNumber)
         
         self.l1BatchNumber = try container.decodeHexIfPresent(BigUInt.self, forKey: .l1BatchNumber)
+        
+        self.l1BatchTxIndex = try container.decodeHexIfPresent(UInt.self, forKey: .l1BatchTxIndex)
 
         self.blockHash = try container.decodeHex(Data.self, forKey: .blockHash)
 
