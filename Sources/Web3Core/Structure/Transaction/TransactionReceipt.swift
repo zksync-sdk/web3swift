@@ -11,6 +11,7 @@ import BigInt
 public struct TransactionReceipt {
     public var transactionHash: Data
     public var blockHash: Data
+    public var l1BatchNumber: BigUInt
     public var blockNumber: BigUInt
     public var transactionIndex: BigUInt
     public var contractAddress: EthereumAddress?
@@ -23,7 +24,7 @@ public struct TransactionReceipt {
     public var logsBloom: EthereumBloomFilter?
 
     static func notProcessed(transactionHash: Data) -> TransactionReceipt {
-        TransactionReceipt(transactionHash: transactionHash, blockHash: Data(), blockNumber: 0, transactionIndex: 0, contractAddress: nil, cumulativeGasUsed: 0, gasUsed: 0, effectiveGasPrice: 0, logs: [], l2ToL1Logs: nil, status: .notYetProcessed, logsBloom: nil)
+        TransactionReceipt(transactionHash: transactionHash, blockHash: Data(), l1BatchNumber: BigUInt(0), blockNumber: 0, transactionIndex: 0, contractAddress: nil, cumulativeGasUsed: 0, gasUsed: 0, effectiveGasPrice: 0, logs: [], l2ToL1Logs: nil, status: .notYetProcessed, logsBloom: nil)
     }
 }
 
@@ -38,6 +39,7 @@ extension TransactionReceipt {
 extension TransactionReceipt: Decodable {
     enum CodingKeys: String, CodingKey {
         case blockHash
+        case l1BatchNumber
         case blockNumber
         case transactionHash
         case transactionIndex
@@ -55,6 +57,8 @@ extension TransactionReceipt: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.blockNumber = try container.decodeHex(BigUInt.self, forKey: .blockNumber)
+        
+        self.l1BatchNumber = try container.decodeHex(BigUInt.self, forKey: .l1BatchNumber)
 
         self.blockHash = try container.decodeHex(Data.self, forKey: .blockHash)
 
