@@ -18,11 +18,12 @@ public struct TransactionReceipt {
     public var gasUsed: BigUInt
     public var effectiveGasPrice: BigUInt
     public var logs: [EventLog]
+    public var l2ToL1Logs: [L2ToL1Log]?
     public var status: TXStatus
     public var logsBloom: EthereumBloomFilter?
 
     static func notProcessed(transactionHash: Data) -> TransactionReceipt {
-        TransactionReceipt(transactionHash: transactionHash, blockHash: Data(), blockNumber: 0, transactionIndex: 0, contractAddress: nil, cumulativeGasUsed: 0, gasUsed: 0, effectiveGasPrice: 0, logs: [], status: .notYetProcessed, logsBloom: nil)
+        TransactionReceipt(transactionHash: transactionHash, blockHash: Data(), blockNumber: 0, transactionIndex: 0, contractAddress: nil, cumulativeGasUsed: 0, gasUsed: 0, effectiveGasPrice: 0, logs: [], l2ToL1Logs: nil, status: .notYetProcessed, logsBloom: nil)
     }
 }
 
@@ -44,6 +45,7 @@ extension TransactionReceipt: Decodable {
         case cumulativeGasUsed
         case gasUsed
         case logs
+        case l2ToL1Logs
         case logsBloom
         case status
         case effectiveGasPrice
@@ -80,7 +82,34 @@ extension TransactionReceipt: Decodable {
         if let hexBytes = try? container.decodeHex(Data.self, forKey: .logsBloom) {
             self.logsBloom = EthereumBloomFilter(hexBytes)
         }
+        
+        self.l2ToL1Logs = try? container.decodeIfPresent([L2ToL1Log].self, forKey: .l2ToL1Logs)
     }
+}
+
+struct L2ToL1Log: Decodable {
+    
+    let blockNumber: BigUInt
+    
+    let blockHash: Data
+    
+    let l1BatchNumber: BigUInt
+    
+    let transactionIndex: UInt
+    
+    let shardId: UInt
+    
+    let isService: Bool
+    
+    let sender: String
+    
+    let key: String
+    
+    let value: String
+    
+    let transactionHash: String
+    
+    let logIndex: UInt
 }
 
 extension TransactionReceipt: APIResultType { }
