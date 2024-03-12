@@ -87,7 +87,7 @@ extension TransactionReceipt: Decodable {
     }
 }
 
-struct L2ToL1Log: Decodable {
+public struct L2ToL1Log: Decodable {
     
     let blockNumber: BigUInt
     
