@@ -58,7 +58,7 @@ extension TransactionReceipt: Decodable {
 
         self.blockNumber = try container.decodeHex(BigUInt.self, forKey: .blockNumber)
         
-        self.l1BatchNumber = try container.decodeIfPresent(BigUInt.self, forKey: .l1BatchNumber)
+        self.l1BatchNumber = try? container.decodeIfPresent(BigUInt.self, forKey: .l1BatchNumber)
 
         self.blockHash = try container.decodeHex(Data.self, forKey: .blockHash)
 
