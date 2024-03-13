@@ -107,10 +107,8 @@ extension Web3 {
         public func createWriteOperation(_ method: String = "fallback", parameters: [Any] = [], extraData: Data = Data()) -> WriteOperation? {
             guard let data = contract.method(method, parameters: parameters, extraData: extraData) else { return nil }
             transaction.data = data
-            if transaction.chainID == nil || transaction.chainID == 0 {
-                if let network = web3.provider.network {
-                    transaction.chainID = network.chainID
-                }
+            if let network = web3.provider.network {
+                transaction.chainID = network.chainID
             }
             return .init(transaction: transaction, web3: web3, contract: contract, method: method)
         }
